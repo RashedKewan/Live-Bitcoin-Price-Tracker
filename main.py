@@ -1,6 +1,5 @@
-from json import dumps as jsonDumps
 import redis
-from flask import Flask
+from flask import Flask,render_template
 from os import environ
 from requests import get as requestGet
 
@@ -27,9 +26,7 @@ def getCurrentPrice():
 def getAvgPrice():
     response = requestGet(cryptoApiAvg)
     candles = response.json()['Data']['Data']
-
     sum = 0
-
     for candle in candles:
         sum += candle['close']
 
@@ -41,23 +38,7 @@ def getAvgPrice():
 
 @app.route('/')
 def getBtcPrice():
-    response = None
-    try:
-        currentPrice = getCurrentPrice()
-        avgPrice = getAvgPrice()
-        data = {'currentPrice': currentPrice, 'avgPrice': avgPrice}
-        response = app.response_class(
-            response=jsonDumps(data),
-            status=200,
-            mimetype='application/json'
-        )
-    except Exception as e:
-        response = app.response_class(
-            status=500,
-            mimetype='application/json'
-        )
-
-    return response
+    return render_template('index.html',CurrentPrice=  getCurrentPrice() ,AvgPrice= getAvgPrice())
 
 
 if __name__ == '__main__':
