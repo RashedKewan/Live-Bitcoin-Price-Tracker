@@ -1,17 +1,25 @@
 pipeline {
-    agent any
+
+  agent any
   
   
-    stages {
-        stage('Build Docker') {
+  stages {
+      
+       stage('Clone Git') {
+            steps {
+                git url:'https://github.com/RashedKewan/Docker-Final-Task.git' , branch:'master'
+            }
+        }
+        
+        stage('Build Image') {
             steps {
                 sh 'docker build -t bitcoin_price .'
             }
         }
         
-        stage('Tag Docker') {
+        stage('Tag Image') {
             steps {
-                sh 'docker tag bitcoin-price kewanrashed/bitcoin_price'
+                sh 'docker tag bitcoin_price kewanrashed/bitcoin_price'
             }
         }
 
@@ -25,25 +33,5 @@ pipeline {
         }
     }
 
-    post {
-        failure {
-            script {
-                slackSend(
-                color: "#FF0000",
-                channel: "automation",
-                message: "Bitcoin_Price Status: FAILED"
-                )
-            }
-        }
-
-        success {
-            script {
-                slackSend(
-                    color: "#00FF00",
-                    channel: "automation",
-                    message: "Bitcoin_Price Status: SUCCESS"
-                ) 
-            }
-        }
-    }
+  
 }
