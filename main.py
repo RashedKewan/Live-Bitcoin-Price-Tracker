@@ -38,7 +38,7 @@ def getAvgPrice():
 
 @app.route('/')
 def getBtcPrice():
-    return render_template('index.html',CurrentPrice=  getCurrentPrice() ,AvgPrice= getAvgPrice())
+    return render_template('index.html',CurrentPrice= cache.get('currentPrice') ,AvgPrice = cache.get('avgPrice'))
 
 
 if __name__ == '__main__':
